@@ -1,9 +1,7 @@
 name: First Workflow #workflow name
 
 on: 
-  workflow_dispatch: #manual trigger
-  push:
-  
+  workflow_dispatch: #manual trigger  
 jobs:
   build:
     runs-on: ubuntu-latest #runner
