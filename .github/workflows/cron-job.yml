@@ -1,6 +1,7 @@
 name: Scheduled Job
 
 on:
+  workflow_dispatch:
   schedule:
     - cron: "19 18 * * *"   # runs every day at 9:00 UTC
 
