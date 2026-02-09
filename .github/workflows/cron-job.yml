@@ -1,0 +1,13 @@
+name: Scheduled Job
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "22 18 * * *"   # runs every day at 9:00 UTC
+
+jobs:
+  run-script:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Print message
+        run: echo "This runs on a schedule"
