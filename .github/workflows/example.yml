@@ -2,12 +2,7 @@ name: First Workflow #workflow name
 
 on: 
   workflow_dispatch: #manual trigger
-    inputs:
-      environment:
-        description: "Environment to run the workflow in" #input description
-        required: true
-        default: "integration"
-
+  
 jobs:
   build:
     runs-on: ubuntu-latest #runner
