@@ -2,7 +2,7 @@ name: Scheduled Job
 
 on:
   schedule:
-    - cron: "40 23 * * *"   # runs every day at 9:00 UTC
+    - cron: "44 23 * * *"   # runs every day at 9:00 UTC
 
 jobs:
   run-script:
