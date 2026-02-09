@@ -1,6 +1,7 @@
 name: First Workflow #workflow name
 
 on: 
+  push:
   workflow_dispatch: #manual trigger
   
 jobs:
