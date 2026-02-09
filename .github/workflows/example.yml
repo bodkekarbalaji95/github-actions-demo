@@ -1,14 +1,15 @@
-name: First Workflow
+name: First Workflow #workflow name
 
-on: push
+on: 
+    workflow_dispatch: #manual trigger
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest #runner
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
       - name: Run a script
-        run: echo "Don't play games"
+        run: echo "Don't play games" 
