@@ -1,76 +1,54 @@
-# Name of the workflow shown in GitHub Actions UI
 name: CI
 
-# Defines when the workflow runs
 on:
-  # Runs when code is pushed to the dev branch
   push:
     branches: [ dev ]
-
-  # Runs when a pull request targets the dev branch
   pull_request:
     branches: [ dev ]
 
 jobs:
 
-  # First job: build and test the project
+  # Job 1: Build, test, and package
   build:
-    # GitHub-hosted runner (Ubuntu virtual machine)
     runs-on: ubuntu-latest
 
     steps:
-      # Step 1: Download repository code into the runner
+      # Download repo
       - uses: actions/checkout@v4
 
-      # Step 2: Install Java and configure Maven cache
+      # Install Java
       - name: Set up Java
         uses: actions/setup-java@v4
         with:
-          # Temurin is a common OpenJDK distribution
           distribution: temurin
-          # Java version used to build the project
           java-version: '17'
-          # Enables caching of Maven dependencies to speed up builds
           cache: maven
 
-      # Step 3: Compile, run tests, and verify project
-      # mvn verify includes compilation + tests + checks
+      # Build + Test + Package
+      # verify already creates the JAR
       - name: Build and test
         run: mvn -B clean verify
 
-
-  # Second job: package and upload artifact
-  package:
-    # This job runs only if the build job succeeds
-    needs: build
-
-    # Runs on a fresh Ubuntu runner
-    runs-on: ubuntu-latest
-
-    steps:
-      # Step 1: Checkout repository again
-      # Each job runs on a clean machine, so checkout is required again
-      - uses: actions/checkout@v4
-
-      # Step 2: Install Java again for this runner
-      - name: Set up Java
-        uses: actions/setup-java@v4
-        with:
-          distribution: temurin
-          java-version: '17'
-          cache: maven
-
-      # Step 3: Package the application into a JAR
-      # -DskipTests skips tests because they already ran in build job
-      - name: Package JAR
-        run: mvn -B package -DskipTests
-
-      # Step 4: Upload the generated JAR as an artifact
-      # Artifact can be downloaded from GitHub Actions UI
+      # Upload the tested JAR
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          # Name shown in GitHub UI
           name: app-jar
-          # Path to the JAR file produced by Maven
           path: target/*.jar
+
+
+  # Job 2: Reuse the built artifact
+  package:
+    runs-on: ubuntu-latest
+    needs: build
+
+    steps:
+      # Download artifact from previous job
+      - name: Download artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: app-jar
+
+      # Show that the file exists
+      - name: List files
+        run: ls -R
