@@ -8,12 +8,12 @@ on:
 
 jobs:
 
-  # Job 1: Build, test, and package
+  # Job 1: Build, test, package
   build:
     runs-on: ubuntu-latest
 
     steps:
-      # Download repo
+      # Checkout source code
       - uses: actions/checkout@v4
 
       # Install Java
@@ -24,12 +24,11 @@ jobs:
           java-version: '17'
           cache: maven
 
-      # Build + Test + Package
-      # verify already creates the JAR
+      # Build project and run tests
       - name: Build and test
         run: mvn -B clean verify
 
-      # Upload the tested JAR
+      # Upload generated JAR
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
@@ -37,21 +36,43 @@ jobs:
           path: target/*.jar
 
 
-  # Job 2: Reuse the built artifact
-  package:
-    runs-on: ubuntu-latest
+  # Job 2: Run the application (smoke test)
+  run-app:
     needs: build
+    runs-on: ubuntu-latest
 
     steps:
-      # Download artifact from previous job
+      # Download JAR from previous job
       - name: Download artifact
         uses: actions/download-artifact@v4
         with:
           name: app-jar
 
-      # Show that the file exists
+      # Show downloaded files
       - name: List files
-        run: ls -R
-        
+        run: ls
+
+      # Run the application
       - name: Run application
         run: java -jar *.jar
+
+
+  # Job 3: Build Docker image
+  docker:
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checkout repo (needed for Dockerfile)
+      - uses: actions/checkout@v4
+
+      # Download the built JAR
+      - name: Download artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: app-jar
+          path: target
+
+      # Build Docker image
+      - name: Build Docker image
+        run: docker build -t java-demo .
