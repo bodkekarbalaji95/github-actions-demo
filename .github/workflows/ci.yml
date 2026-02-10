@@ -52,3 +52,6 @@ jobs:
       # Show that the file exists
       - name: List files
         run: ls -R
+        
+      - name: Run application
+        run: java -jar *.jar
