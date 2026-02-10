@@ -7,7 +7,8 @@ public class App {
     }
 
     public static void main(String[] args) {
-        System.out.println("Hello prisma");
+        System.out.println("Dont play games");
     }
 }
+
 
