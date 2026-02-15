@@ -74,9 +74,6 @@ jobs:
           path: target
 
       # Build Docker image
-      - name: Build Docker image
-        run: docker build -t java-demo .
-
       - name: Log in to Docker Hub
         uses: docker/login-action@v3
         with:
@@ -87,4 +84,5 @@ jobs:
         run: docker build -t ${{ secrets.DOCKER_USERNAME }}/java-demo:latest .
 
       - name: Push Docker image
+
         run: docker push ${{ secrets.DOCKER_USERNAME }}/java-demo:latest
